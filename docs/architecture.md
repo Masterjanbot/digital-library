@@ -1,0 +1,5 @@
+# Architecture
+
+The deployment uses Nginx as the public entry point, proxying `/api/` and `/admin/` to Django and other paths to the Next.js app. Django REST Framework owns authentication, role checks, catalog, personal reading data, and subscription state. PostgreSQL is the source of truth; Redis is used by Celery. Celery worker and beat are separate processes. MinIO stores uploaded book documents and covers through Django's storage backend; Compose builds the server from a pinned upstream source revision and initializes the configured bucket before starting Django. MinIO source is licensed under AGPLv3; review the [upstream license](https://github.com/minio/minio/blob/master/LICENSE) for your use case.
+
+The frontend is a Next.js App Router application. It requests API resources through a small Axios client, stores JWTs in browser session storage, and uses `next-intl` locale routing for English, Persian, and Dari. User-owned records are filtered in the API queryset as well as protected by authenticated permissions.
